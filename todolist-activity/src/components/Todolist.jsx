@@ -1,74 +1,114 @@
 import './Todolist.css'
 import { useState } from 'react'
 
-export default function Todolist() {
-  const [tarefa, setTarefa] = useState('');
-  const [lista, setLista] = useState([]);
-  const [ordem, setOrdem] = useState('');
+export default function Listar() {
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (tarefa.trim() !== "") {    /* trim remove os espaços em branco no começo e fim */
-      setLista([...lista, { nome: tarefa, status: "pendente" }]);
-      setTarefa('');
-    }
-  };
+    const [tarefa, setTarefa] = useState('')
+    const [lista, setLista] = useState([])
 
-  const handleStatusChange = (index, novoStatus) => {
-    const novaLista = [...lista];
-    novaLista[index].status = novoStatus;
-    setLista(novaLista);
-  };
+        const handleSubmit = (e) => {
+            e.preventDefault()
+            if (!tarefa){
+                return
+            }
 
-  const listaOrdenada = lista.slice().sort((a, b) => {
-    if (ordem === "crescente") return a.nome.localeCompare(b.nome);
-    if (ordem === "decrescente") return b.nome.localeCompare(a.nome);
-    return 0;
-  });
+            //tarefa agora passa a ser um objeto. Com isso adiconamos o status e o seu id (função para gerar aleatória)
+            const novaTarefa = {
+                id: Math.floor(Math.random()*10000),
+                texto: tarefa,
+                status: false
+            }
 
-  return (
-    <div>
-      <h2>Lista de Tarefas React</h2>
+            setLista([...lista, novaTarefa] )
+            setTarefa('')
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="tarefa"
-          value={tarefa}
-          onChange={(e) => setTarefa(e.target.value)}
-        />
-        <input type="submit" value="Adicionar" />
-      </form>
+        }
 
-      <ul>
-        {listaOrdenada.map((item, index) => (
-          <li key={index}>
-            <strong>{item.nome}</strong> - Status: {item.status} -
+        //função para alterar o status da tarefa. Aqui optamos por trabalhar com dois estados: concluída ou não.
+         const handleToggle = (id) => {
+        setLista(lista.map(item => 
+            item.id === id ? { ...item, status: !item.status } : item
+        ))
+        }
+
+        //função mais 'complexa'. Aqui vamo reposicionar a tarefa no array lista de forma incremental.
+        const handleMove = (id, direcao) => {
+
+            //o método finIndex retorna o index do elemento que satisfaz alguma condição. Aqui estamos utilizando para
+            //retornar o index do elemento que tem o id igual ao que foi passado para a função handleMove.
+            //Perceba que aqui o index é diferente do id.
             
-            <select
-              value={item.status}
-              onChange={(e) => handleStatusChange(index, e.target.value)}
-            >
-              <option value="concluida">concluída</option>
-              <option value="pendente">pendente</option>
-              <option value="não realizada">não realizada</option>
-            </select>
-          </li>
-        ))}
-      </ul>
+            const indice = lista.findIndex(item => item.id === id)
 
-      <select
-        name="ordem"
-        id="ordem"
-        value={ordem}
-        onChange={(e) => setOrdem(e.target.value)}
-      >
-        <option value="sem ordem">sem ordem</option>
-        <option value="crescente">crescente</option>
-        <option value="decrescente">decrescente</option>
-      </select>
+            //condições extraordinárias
 
-      <h2>suas tarefas estão em ordem {ordem}</h2>
-    </div>
-  );
+            if((indice === 0 && direcao === 'subir') || (indice === lista.length -1 && direcao === 'descer')){
+                return;
+            }
+
+            const novaLista = [...lista]; //copia da lista original
+            //splice modifica array, removendo ou inserindo elemento. Ele retorna o array modificado. Aqui está sendo removido 1 elementos na posição indice.
+            //esse elemento removido é a saída de splice em forma de um novo array. A notação [0] é utilizada para indicar o primeiro elemento do array de retorno.
+            //Por fim, itemMovido irá armazenar o elemento que precisa ser movido.
+            const itemMovido = novaLista.splice(indice, 1)[0]
+
+            //veririca em que sentido deve ser movido o item e faz o incremento ou decremento do seu indice.
+            const novoIndice = direcao === 'subir' ? indice -1 : indice +1;
+
+            //reposicionamento do elemento. Na posição novoIndice, remove-se 0 elementos e adiciona itemMovido
+            novaLista.splice(novoIndice, 0, itemMovido)
+
+            setLista(novaLista)
+        }
+
+        const handleClear = () => {
+            setLista([])
+        }
+
+
+    return(
+        <div>
+            <h2>Lista de Tarefas</h2>
+
+            <form onSubmit={handleSubmit}>
+
+                <label>
+                    <input type="text" onChange={(e) => setTarefa(e.target.value)} value={tarefa}/>
+                </label>
+                
+
+                <input type="submit" value="Adicionar"/>
+            </form>
+
+            <button onClick={handleClear}>Reset</button>
+
+            <ul>
+               {lista.map((item, index) => 
+                <li key={item.id} className={item.status ? 'concluida' : ''}>
+                     <div className="controles-ordem">
+                            <button 
+                                onClick={() => handleMove(item.id, 'subir')} 
+                                disabled={index === 0} // Desabilita o botão se for o primeiro item
+                                title="Mover para cima"
+                            >
+                                ↑
+                            </button>
+                            <button 
+                                onClick={() => handleMove(item.id, 'descer')} 
+                                disabled={index === lista.length - 1} // Desabilita se for o último
+                                title="Mover para baixo"
+                            >
+                                ↓
+                            </button>
+                        </div>
+                    <span>{item.texto}</span>
+                    <button onClick={() => handleToggle(item.id)}>{item.status ? 'Desmarcar' : 'Concluir'}</button>
+                </li>
+                
+               )}
+            </ul>
+        </div>
+
+    )
+
 }
