@@ -139,7 +139,7 @@ export default function Listar() {
                     <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">Deletar</button>
 
                     <select name="select-prioridade" id="select-prioridade" value={item.prioridade} onChange={(e) => changePrioridade(item.id, e.target.value)}>
-                        <option value="prioridade">prioridade</option>
+                        <option value="a-definir">prioridade</option>
                         <option value="baixa-prioridade">baixa prioridade</option>
                         <option value="média-prioridade">média prioridade</option>
                         <option value="alta-prioridade">alta prioridade</option>
