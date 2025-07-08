@@ -5,6 +5,7 @@ export default function Listar() {
 
     const [tarefa, setTarefa] = useState('')
     const [lista, setLista] = useState([])
+    const [prioridade, setPrioridade] = useState('')
 
         const handleSubmit = (e) => {
             e.preventDefault()
@@ -16,7 +17,8 @@ export default function Listar() {
             const novaTarefa = {
                 id: Math.floor(Math.random()*10000),
                 texto: tarefa,
-                status: false
+                status: false,
+                prioridade: 'a definir'
             }
 
             setLista([...lista, novaTarefa] )
@@ -70,6 +72,14 @@ export default function Listar() {
             const novaLista = lista.filter(item => item.id !== id)
             setLista(novaLista)
         }
+
+        const changePrioridade = (id, novaPrioridade) => {
+            const novaLista = lista.map(item => 
+                item.id === id ? { ...item, prioridade: novaPrioridade } : item
+            )
+            setLista(novaLista)
+        }
+
     return(
         <div>
             <h2>Lista de Tarefas</h2>
@@ -105,10 +115,16 @@ export default function Listar() {
                                 ↓
                             </button>
                         </div>
-                    <span>{item.texto}</span>
+                    <span>{item.texto}</span> prioridade: {item.prioridade}
                     <button onClick={() => handleToggle(item.id)}>{item.status ? 'Desmarcar' : 'Concluir'}</button>
 
                     <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">Deletar</button>
+
+                    <select name="select-prioridade" id="select-prioridade" value={item.prioridade} onChange={(e) => changePrioridade(item.id, e.target.value)}>
+                        <option value="baixa prioridade">baixa prioridade</option>
+                        <option value="média prioridade">média prioridade</option>
+                        <option value="alta prioridade">alta prioridade</option>
+                    </select>
                 </li>
                 
                )}
