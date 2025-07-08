@@ -66,6 +66,9 @@ export default function Listar() {
         }
 
 
+        const deletarTarefa = () => {
+            
+        }
     return(
         <div>
             <h2>Lista de Tarefas</h2>
@@ -103,6 +106,8 @@ export default function Listar() {
                         </div>
                     <span>{item.texto}</span>
                     <button onClick={() => handleToggle(item.id)}>{item.status ? 'Desmarcar' : 'Concluir'}</button>
+
+                    <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">Deletar</button>
                 </li>
                 
                )}
