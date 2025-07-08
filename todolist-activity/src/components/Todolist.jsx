@@ -5,7 +5,8 @@ export default function Listar() {
 
     const [tarefa, setTarefa] = useState('')
     const [lista, setLista] = useState([])
-    const [prioridade, setPrioridade] = useState('')
+    const [filtro, setFiltro] = useState('todas')
+
 
         const handleSubmit = (e) => {
             e.preventDefault()
@@ -79,11 +80,20 @@ export default function Listar() {
             )
             setLista(novaLista)
         }
+        
+        const changeFiltro = (filtroSelecionado) => {
+            setFiltro(filtroSelecionado)
+        }
+
+        const listaFiltrada = lista.filter(item =>  /* faz o teste para cada item, se passar no teste a função retorna true e o item é mantido na nova lista, se retornar false o item é descartado*/
+            filtro === 'todas' ? true : item.prioridade === filtro
+        )
 
     return(
         <div>
             <h2>Lista de Tarefas</h2>
 
+            <h4>Nova Tarefa</h4>
             <form onSubmit={handleSubmit}>
 
                 <label>
@@ -95,9 +105,17 @@ export default function Listar() {
             </form>
 
             <button onClick={handleClear}>Reset</button>
-
+            
+            <h3>filtrar tarefas:</h3>
+            <select name="select-filtrar" id="select-filtrar" onChange={(e) => changeFiltro(e.target.value)}>
+                <option value="todas">todas</option>
+                <option value="baixa prioridade">baixa prioridade</option>
+                <option value="média prioridade"> média prioridade</option>
+                <option value="alta prioridade"> alta prioridade</option>
+            </select>
+            
             <ul>
-               {lista.map((item, index) => 
+               {listaFiltrada.map((item, index) => 
                 <li key={item.id} className={item.status ? 'concluida' : ''}>
                      <div className="controles-ordem">
                             <button 
@@ -121,6 +139,7 @@ export default function Listar() {
                     <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">Deletar</button>
 
                     <select name="select-prioridade" id="select-prioridade" value={item.prioridade} onChange={(e) => changePrioridade(item.id, e.target.value)}>
+                        <option value="prioridade">prioridade</option>
                         <option value="baixa prioridade">baixa prioridade</option>
                         <option value="média prioridade">média prioridade</option>
                         <option value="alta prioridade">alta prioridade</option>
