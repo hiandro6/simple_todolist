@@ -1,7 +1,9 @@
-#root {
-  height: 100%;
-}
-
 .App {
-  
+  background-color: #023535;
+  height: 100%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }

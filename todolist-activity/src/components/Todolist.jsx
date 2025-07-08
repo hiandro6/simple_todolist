@@ -81,8 +81,8 @@ export default function Listar() {
         }
 
     return(
-        <div>
-            <h2>Lista de Tarefas</h2>
+        <div className='todo'>
+            <h1>Lista de Tarefas</h1>
 
             <form onSubmit={handleSubmit}>
 
