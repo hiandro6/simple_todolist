@@ -66,8 +66,9 @@ export default function Listar() {
         }
 
 
-        const deletarTarefa = () => {
-            
+        const deletarTarefa = (id) => {
+            const novaLista = lista.filter(item => item.id !== id)
+            setLista(novaLista)
         }
     return(
         <div>
