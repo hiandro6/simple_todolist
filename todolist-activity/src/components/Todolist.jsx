@@ -19,7 +19,7 @@ export default function Listar() {
                 id: Math.floor(Math.random()*10000),
                 texto: tarefa,
                 status: false,
-                prioridade: 'a definir'
+                prioridade: 'a-definir'
             }
 
             setLista([...lista, novaTarefa] )
@@ -109,14 +109,14 @@ export default function Listar() {
             <h3>filtrar tarefas:</h3>
             <select name="select-filtrar" id="select-filtrar" onChange={(e) => changeFiltro(e.target.value)}>
                 <option value="todas">todas</option>
-                <option value="baixa prioridade">baixa prioridade</option>
-                <option value="média prioridade"> média prioridade</option>
-                <option value="alta prioridade"> alta prioridade</option>
+                <option value="baixa-prioridade">baixa prioridade</option>
+                <option value="média-prioridade"> média prioridade</option>
+                <option value="alta-prioridade"> alta prioridade</option>
             </select>
             
             <ul>
                {listaFiltrada.map((item, index) => 
-                <li key={item.id} className={item.status ? 'concluida' : ''}>
+                <li key={item.id} className={`${item.prioridade} ${item.status ? 'concluida' : ''}`}>
                      <div className="controles-ordem">
                             <button 
                                 onClick={() => handleMove(item.id, 'subir')} 
@@ -140,9 +140,9 @@ export default function Listar() {
 
                     <select name="select-prioridade" id="select-prioridade" value={item.prioridade} onChange={(e) => changePrioridade(item.id, e.target.value)}>
                         <option value="prioridade">prioridade</option>
-                        <option value="baixa prioridade">baixa prioridade</option>
-                        <option value="média prioridade">média prioridade</option>
-                        <option value="alta prioridade">alta prioridade</option>
+                        <option value="baixa-prioridade">baixa prioridade</option>
+                        <option value="média-prioridade">média prioridade</option>
+                        <option value="alta-prioridade">alta prioridade</option>
                     </select>
                 </li>
                 
