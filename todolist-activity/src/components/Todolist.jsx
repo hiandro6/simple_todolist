@@ -168,10 +168,10 @@ export default function Listar() {
               onChange={(e) => changePrioridade(item.id, e.target.value)}
             >
               
-              <option value="a-definir">não definir</option>
-              <option value="baixa-prioridade">baixa prioridade</option>
-              <option value="média-prioridade">média prioridade</option>
-              <option value="alta-prioridade">alta prioridade</option>
+              <option value="a-definir">Não definida</option>
+              <option value="baixa-prioridade">Baixa prioridade</option>
+              <option value="média-prioridade">Média prioridade</option>
+              <option value="alta-prioridade">Alta prioridade</option>
             </select>
           </li>
         ))}

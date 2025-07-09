@@ -1,6 +1,6 @@
 .App {
   background-color: #023535;
-  height: 100%;
+  height: 100vh;
   color: #fff;
   display: flex;
   justify-content: center;
