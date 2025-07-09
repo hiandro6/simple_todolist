@@ -1,155 +1,171 @@
-import './Todolist.css'
-import { useState } from 'react'
+import "./Todolist.css";
+import { useState } from "react";
 
 export default function Listar() {
+  const [tarefa, setTarefa] = useState("");
+  const [lista, setLista] = useState([]);
+  const [filtro, setFiltro] = useState("todas");
 
-    const [tarefa, setTarefa] = useState('')
-    const [lista, setLista] = useState([])
-    const [filtro, setFiltro] = useState('todas')
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!tarefa) {
+      return;
+    }
 
+    //tarefa agora passa a ser um objeto. Com isso adiconamos o status e o seu id (função para gerar aleatória)
+    const novaTarefa = {
+      id: Math.floor(Math.random() * 10000),
+      texto: tarefa,
+      status: false,
+      prioridade: "a-definir",
+    };
 
-        const handleSubmit = (e) => {
-            e.preventDefault()
-            if (!tarefa){
-                return
-            }
+    setLista([...lista, novaTarefa]);
+    setTarefa("");
+  };
 
-            //tarefa agora passa a ser um objeto. Com isso adiconamos o status e o seu id (função para gerar aleatória)
-            const novaTarefa = {
-                id: Math.floor(Math.random()*10000),
-                texto: tarefa,
-                status: false,
-                prioridade: 'a-definir'
-            }
+  //função para alterar o status da tarefa. Aqui optamos por trabalhar com dois estados: concluída ou não.
+  const handleToggle = (id) => {
+    setLista(
+      lista.map((item) =>
+        item.id === id ? { ...item, status: !item.status } : item
+      )
+    );
+  };
 
-            setLista([...lista, novaTarefa] )
-            setTarefa('')
+  //função mais 'complexa'. Aqui vamo reposicionar a tarefa no array lista de forma incremental.
+  const handleMove = (id, direcao) => {
+    //o método finIndex retorna o index do elemento que satisfaz alguma condição. Aqui estamos utilizando para
+    //retornar o index do elemento que tem o id igual ao que foi passado para a função handleMove.
+    //Perceba que aqui o index é diferente do id.
 
-        }
+    const indice = lista.findIndex((item) => item.id === id);
 
-        //função para alterar o status da tarefa. Aqui optamos por trabalhar com dois estados: concluída ou não.
-         const handleToggle = (id) => {
-        setLista(lista.map(item => 
-            item.id === id ? { ...item, status: !item.status } : item
-        ))
-        }
+    //condições extraordinárias
 
-        //função mais 'complexa'. Aqui vamo reposicionar a tarefa no array lista de forma incremental.
-        const handleMove = (id, direcao) => {
+    if (
+      (indice === 0 && direcao === "subir") ||
+      (indice === lista.length - 1 && direcao === "descer")
+    ) {
+      return;
+    }
 
-            //o método finIndex retorna o index do elemento que satisfaz alguma condição. Aqui estamos utilizando para
-            //retornar o index do elemento que tem o id igual ao que foi passado para a função handleMove.
-            //Perceba que aqui o index é diferente do id.
-            
-            const indice = lista.findIndex(item => item.id === id)
+    const novaLista = [...lista]; //copia da lista original
+    //splice modifica array, removendo ou inserindo elemento. Ele retorna o array modificado. Aqui está sendo removido 1 elementos na posição indice.
+    //esse elemento removido é a saída de splice em forma de um novo array. A notação [0] é utilizada para indicar o primeiro elemento do array de retorno.
+    //Por fim, itemMovido irá armazenar o elemento que precisa ser movido.
+    const itemMovido = novaLista.splice(indice, 1)[0];
 
-            //condições extraordinárias
+    //veririca em que sentido deve ser movido o item e faz o incremento ou decremento do seu indice.
+    const novoIndice = direcao === "subir" ? indice - 1 : indice + 1;
 
-            if((indice === 0 && direcao === 'subir') || (indice === lista.length -1 && direcao === 'descer')){
-                return;
-            }
+    //reposicionamento do elemento. Na posição novoIndice, remove-se 0 elementos e adiciona itemMovido
+    novaLista.splice(novoIndice, 0, itemMovido);
 
-            const novaLista = [...lista]; //copia da lista original
-            //splice modifica array, removendo ou inserindo elemento. Ele retorna o array modificado. Aqui está sendo removido 1 elementos na posição indice.
-            //esse elemento removido é a saída de splice em forma de um novo array. A notação [0] é utilizada para indicar o primeiro elemento do array de retorno.
-            //Por fim, itemMovido irá armazenar o elemento que precisa ser movido.
-            const itemMovido = novaLista.splice(indice, 1)[0]
+    setLista(novaLista);
+  };
 
-            //veririca em que sentido deve ser movido o item e faz o incremento ou decremento do seu indice.
-            const novoIndice = direcao === 'subir' ? indice -1 : indice +1;
+  const handleClear = () => {
+    setLista([]);
+  };
 
-            //reposicionamento do elemento. Na posição novoIndice, remove-se 0 elementos e adiciona itemMovido
-            novaLista.splice(novoIndice, 0, itemMovido)
+  const deletarTarefa = (id) => {
+    const novaLista = lista.filter((item) => item.id !== id);
+    setLista(novaLista);
+  };
 
-            setLista(novaLista)
-        }
+  const changePrioridade = (id, novaPrioridade) => {
+    const novaLista = lista.map((item) =>
+      item.id === id ? { ...item, prioridade: novaPrioridade } : item
+    );
+    setLista(novaLista);
+  };
 
-        const handleClear = () => {
-            setLista([])
-        }
+  const changeFiltro = (filtroSelecionado) => {
+    setFiltro(filtroSelecionado);
+  };
 
+  const listaFiltrada = lista.filter(
+    (
+      item /* faz o teste para cada item, se passar no teste a função retorna true e o item é mantido na nova lista, se retornar false o item é descartado*/
+    ) => (filtro === "todas" ? true : item.prioridade === filtro)
+  );
 
-        const deletarTarefa = (id) => {
-            const novaLista = lista.filter(item => item.id !== id)
-            setLista(novaLista)
-        }
+  return (
+    <div className="todo">
+      <h1>Lista de Tarefas</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <input
+            type="text"
+            onChange={(e) => setTarefa(e.target.value)}
+            value={tarefa}
+            placeholder="Adicione uma tarefa"
+          />
+        </label>
 
-        const changePrioridade = (id, novaPrioridade) => {
-            const novaLista = lista.map(item => 
-                item.id === id ? { ...item, prioridade: novaPrioridade } : item
-            )
-            setLista(novaLista)
-        }
-        
-        const changeFiltro = (filtroSelecionado) => {
-            setFiltro(filtroSelecionado)
-        }
+        <input type="submit" value="Adicionar" className="task" />
+      </form>
 
-        const listaFiltrada = lista.filter(item =>  /* faz o teste para cada item, se passar no teste a função retorna true e o item é mantido na nova lista, se retornar false o item é descartado*/
-            filtro === 'todas' ? true : item.prioridade === filtro
-        )
+      <button onClick={handleClear} className="reset">Reset</button>
 
-    return(
-        <div className='todo'>
-            <h1>Lista de Tarefas</h1>
+      <div className="filtro">
+        <h3>Filtrar tarefas:</h3>
+        <select
+          name="select-filtrar"
+          id="select-filtrar"
+          onChange={(e) => changeFiltro(e.target.value)}
+        >
+          <option value="todas">todas</option>
+          <option value="baixa-prioridade">baixa prioridade</option>
+          <option value="média-prioridade"> média prioridade</option>
+          <option value="alta-prioridade"> alta prioridade</option>
+        </select>
+      </div>
 
-            <h4>Nova Tarefa</h4>
-            <form onSubmit={handleSubmit}>
-
-                <label>
-                    <input type="text" onChange={(e) => setTarefa(e.target.value)} value={tarefa}/>
-                </label>
-                
-
-                <input type="submit" value="Adicionar"/>
-            </form>
-
-            <button onClick={handleClear}>Reset</button>
-            
-            <h3>filtrar tarefas:</h3>
-            <select name="select-filtrar" id="select-filtrar" onChange={(e) => changeFiltro(e.target.value)}>
-                <option value="todas">todas</option>
-                <option value="baixa-prioridade">baixa prioridade</option>
-                <option value="média-prioridade"> média prioridade</option>
-                <option value="alta-prioridade"> alta prioridade</option>
+      <ul className="filtro">
+        {listaFiltrada.map((item, index) => (
+          <li
+            key={item.id}
+            className={`${item.prioridade} ${item.status ? "concluida" : ""}`}
+          >
+            <div className="controles-ordem">
+              <button
+                onClick={() => handleMove(item.id, "subir")}
+                disabled={index === 0} // Desabilita o botão se for o primeiro item
+                title="Mover para cima"
+              >
+                ↑
+              </button>
+              <button
+                onClick={() => handleMove(item.id, "descer")}
+                disabled={index === lista.length - 1} // Desabilita se for o último
+                title=" Mover para baixo"
+              >
+                ↓
+              </button>
+            </div>
+            <span>{item.texto}</span> Prioridade: {item.prioridade}
+            <button onClick={() => handleToggle(item.id)}>
+              {item.status ? "Desmarcar" : "Concluir"}
+            </button>
+            <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">
+              Deletar
+            </button>
+            <select
+              name="select-prioridade"
+              id="select-prioridade"
+              value={item.prioridade}
+              onChange={(e) => changePrioridade(item.id, e.target.value)}
+            >
+              <option value="a-definir">prioridade</option>
+              <option value="baixa-prioridade">baixa prioridade</option>
+              <option value="média-prioridade">média prioridade</option>
+              <option value="alta-prioridade">alta prioridade</option>
             </select>
-            
-            <ul>
-               {listaFiltrada.map((item, index) => 
-                <li key={item.id} className={`${item.prioridade} ${item.status ? 'concluida' : ''}`}>
-                     <div className="controles-ordem">
-                            <button 
-                                onClick={() => handleMove(item.id, 'subir')} 
-                                disabled={index === 0} // Desabilita o botão se for o primeiro item
-                                title="Mover para cima"
-                            >
-                                ↑
-                            </button>
-                            <button 
-                                onClick={() => handleMove(item.id, 'descer')} 
-                                disabled={index === lista.length - 1} // Desabilita se for o último
-                                title="Mover para baixo"
-                            >
-                                ↓
-                            </button>
-                        </div>
-                    <span>{item.texto}</span> prioridade: {item.prioridade}
-                    <button onClick={() => handleToggle(item.id)}>{item.status ? 'Desmarcar' : 'Concluir'}</button>
-
-                    <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">Deletar</button>
-
-                    <select name="select-prioridade" id="select-prioridade" value={item.prioridade} onChange={(e) => changePrioridade(item.id, e.target.value)}>
-                        <option value="a-definir">prioridade</option>
-                        <option value="baixa-prioridade">baixa prioridade</option>
-                        <option value="média-prioridade">média prioridade</option>
-                        <option value="alta-prioridade">alta prioridade</option>
-                    </select>
-                </li>
-                
-               )}
-            </ul>
-        </div>
-
-    )
-
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
