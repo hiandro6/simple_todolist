@@ -78,7 +78,7 @@ export default function Listar() {
   };
 
   const deletarTarefa = (id) => {
-    const r = window.confirm("Deletar?");
+    const r = window.confirm("Você deseja apagar essa tarefa?");
     if (r) {
       const novaLista = lista.filter((item) => item.id !== id);
       setLista(novaLista);
