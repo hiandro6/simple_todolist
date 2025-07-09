@@ -161,7 +161,7 @@ export default function Listar() {
               {item.status ? "Desmarcar" : "Concluir"}
             </button>
             <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">
-              Deletar
+              Apagar
             </button>
             <span>Prioridade:</span>
             <select
