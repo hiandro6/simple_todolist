@@ -78,8 +78,11 @@ export default function Listar() {
   };
 
   const deletarTarefa = (id) => {
-    const novaLista = lista.filter((item) => item.id !== id);
-    setLista(novaLista);
+    const r = window.confirm("Deletar?");
+    if (r) {
+      const novaLista = lista.filter((item) => item.id !== id);
+      setLista(novaLista);
+    } else { return; }
   };
 
   const changePrioridade = (id, novaPrioridade) => {
