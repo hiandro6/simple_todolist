@@ -105,6 +105,7 @@ export default function Listar() {
   return (
     <div className="todo">
       <h1>Lista de Tarefas</h1>
+      <div className="line"></div>
       <form onSubmit={handleSubmit}>
         <label>
           <input
@@ -127,10 +128,10 @@ export default function Listar() {
           id="select-filtrar"
           onChange={(e) => changeFiltro(e.target.value)}
         >
-          <option value="todas">todas</option>
-          <option value="baixa-prioridade">baixa prioridade</option>
-          <option value="média-prioridade"> média prioridade</option>
-          <option value="alta-prioridade"> alta prioridade</option>
+          <option value="todas">Todas</option>
+          <option value="baixa-prioridade">Baixa prioridade</option>
+          <option value="média-prioridade"> Média prioridade</option>
+          <option value="alta-prioridade"> Alta prioridade</option>
         </select>
       </div>
 

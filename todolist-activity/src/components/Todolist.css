@@ -196,3 +196,10 @@ button:hover {
   background-color: #cc0000;
   border: solid 2px rgb(48, 48, 48);
 }
+
+.line {
+  height: 2px;
+  width: 30%;
+  background-color: #008f8c;
+  border-radius: 5px;
+}
