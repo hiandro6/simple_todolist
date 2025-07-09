@@ -26,6 +26,7 @@ export default function Listar() {
 
   //função para alterar o status da tarefa. Aqui optamos por trabalhar com dois estados: concluída ou não.
   const handleToggle = (id) => {
+    
     setLista(
       lista.map((item) =>
         item.id === id ? { ...item, status: !item.status } : item
@@ -66,7 +67,14 @@ export default function Listar() {
   };
 
   const handleClear = () => {
-    setLista([]);
+    if (lista.length === 0) {
+      return;
+    } else {
+      let r = confirm("Ao confirmar, todas as tarefas serão removidas. Deseja continuar?");
+      if (r) {
+        setLista([]);
+      }
+  }
   };
 
   const deletarTarefa = (id) => {
@@ -145,20 +153,22 @@ export default function Listar() {
                 ↓
               </button>
             </div>
-            <span>{item.texto}</span> Prioridade: {item.prioridade}
+            <span className="titulo">{item.texto}</span>
             <button onClick={() => handleToggle(item.id)}>
               {item.status ? "Desmarcar" : "Concluir"}
             </button>
             <button onClick={() => deletarTarefa(item.id)} id="botao-deletar">
               Deletar
             </button>
+            <span>Prioridade:</span>
             <select
               name="select-prioridade"
               id="select-prioridade"
               value={item.prioridade}
               onChange={(e) => changePrioridade(item.id, e.target.value)}
             >
-              <option value="a-definir">prioridade</option>
+              
+              <option value="a-definir">não definir</option>
               <option value="baixa-prioridade">baixa prioridade</option>
               <option value="média-prioridade">média prioridade</option>
               <option value="alta-prioridade">alta prioridade</option>
